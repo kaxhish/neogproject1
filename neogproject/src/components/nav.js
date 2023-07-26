@@ -10,7 +10,10 @@ export default function NavBar(){
     return(
         <div className="navbar">
             <h1 className="appNameNav">ReadEra</h1>
+            <NavLink to="/products">
             <input type="text" placeholder="search for books" className="serachBar"  />
+            </NavLink>
+           
             <div className="navCartWishStyle">
                 <NavLink to="/"><img alt="home" src="https://www.freepnglogos.com/uploads/logo-home-png/home-transparent-home-images-10.png"  width="20px" className='navCart'/></NavLink>
        <NavLink to="/cart"><img alt="cart" src="https://cdn.onlinewebfonts.com/svg/img_225646.png"  className='navCart' width="20px"/></NavLink>

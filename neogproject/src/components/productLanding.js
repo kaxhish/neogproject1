@@ -2,13 +2,21 @@ import React from "react"
 import {products} from "../backend/db/products"
 import { useState,useEffect,useContext} from "react"
 import { cartContext } from "../contexts/cartContext"
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {AiFillHeart} from "react-icons/ai"
+import {AiOutlineHeart} from "react-icons/ai"
+import { useNavigate,Link } from "react-router-dom";
 
 
-
-export default function ProductLandingPage(){
+export default function ProductLandingPage({isNavigateLogCl}){
+  
     const [isData,setIsData] = useState([])
     const [filteredData,setsflteredData] = useState(isData)
-    const {handleCarts,handleWishes} = useContext(cartContext)
+    const navigate=useNavigate()
+    const {handleCarts,handleWishes,isWish,handleremoveWishes,isTitle,handleProductDetails} = useContext(cartContext)
+
+
     useEffect(() =>{
         setIsData(products)
         setsflteredData(products)
@@ -24,6 +32,7 @@ export default function ProductLandingPage(){
     let handlePrices=(prices) =>{
         setsflteredData(prices==="low to high" ? isData.sort((a,b)=> a.price-b.price) : isData.sort((a,b) => b.price-a.price))
     }
+
     return(
        <div className="productPageStyle">
 
@@ -54,13 +63,38 @@ export default function ProductLandingPage(){
            <div className="allCards">
             {filteredData.map((item) =>{
                 let {id,title,author,price,rating,image} = item
+                
+    const inWishlist = isWish.find(
+        (litm) => litm._id === item._id
+      );
+      const isProductInCart = isTitle.find(
+        (cartitem) => cartitem._id === item._id
+      );
+
                 return(
                     <div  key={id}>
                         <div className="innerAllCards">
                     
                         <div className="forWishList">
-                      <p> <img src={image} alt="df" className="cartImage"/> </p> 
-                      <img alt="wishimg" src="https://cdn.onlinewebfonts.com/svg/img_327030.png" style={{margin:"7px", }} width="20px" height="20px" onClick={() => handleWishes(item)} />
+                      <p>
+                        <Link to="/productdetails" onClick={() => handleProductDetails(item)}>
+                        <img src={image} alt="df" className="cartImage"/>
+                        </Link>
+                       
+                          </p> 
+
+                      {inWishlist ? (
+              <AiFillHeart
+                className="add-to-wishlist-icon .icon-fill"
+                onClick={() =>  handleremoveWishes(item)}
+              />
+            ) : (
+              <AiOutlineHeart
+                className="add-to-wishlist-icon"
+                onClick={() => isNavigateLogCl ? handleWishes(item) : navigate("/login")
+                }
+              />
+            )}
                       </div>
                       <p className="titleAndRating">
                         <p className="cartTitle">{title}</p>
@@ -69,8 +103,33 @@ export default function ProductLandingPage(){
                         <p className="cartAuthor">{author}</p>
                         <p className="cartPrice">${price}</p>
 
-                       <p> <button className="cartButtton" onClick={() => handleCarts(item)}>Add to cart</button></p>
-                      
+                        {isProductInCart ? (
+              <Link to="/cart" className="goToCart-btn">
+                <button className="buttonCartGo">Go To Cart</button>
+              </Link>
+            ) : (
+              <button
+                className="buttonccart"
+                onClick={() =>
+                  isNavigateLogCl
+                    ? handleCarts(item)
+                    : navigate("/login")
+                }
+              >
+                Add To Cart
+              </button>
+            )}
+                       <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
                       </div>
                      
                         </div>
